@@ -55,7 +55,7 @@ public class RobotBodyTest {
 		};
 		RobotBody body = new RobotBody(physics, attachmentLocs, perimeterLocs);
 
-		Vector3f expected = new Vector3f(0f, 1f, -1f), result = body.jointLocs[0];
+		Vector3f expected = new Vector3f(0f, 1f, -1f), result = body.getJointLocs()[0];
 
 		assertTrue(String.format("Expected %s, got %s", expected, result),
 				expected.epsilonEquals(result, 0.0001f));
@@ -72,7 +72,7 @@ public class RobotBodyTest {
 		};
 		RobotBody body = new RobotBody(physics, attachmentLocs, perimeterLocs);
 
-		Vector3f expected = new Vector3f(0f, 1f, -2f), result = body.jointLocs[1];
+		Vector3f expected = new Vector3f(0f, 1f, -2f), result = body.getJointLocs()[1];
 
 		assertTrue(String.format("Expected %s, got %s", expected, result),
 				expected.epsilonEquals(result, 0.0001f));
@@ -90,7 +90,7 @@ public class RobotBodyTest {
 		RobotBody body = new RobotBody(physics, attachmentLocs, perimeterLocs);
 
 
-		Vector3f expected = new Vector3f(-1.5f, 1f, 0f), result = body.bodyLocs[2];
+		Vector3f expected = new Vector3f(-1.5f, 1f, 0f), result = body.getBodyLocs()[2];
 
 		assertTrue(String.format("Expected %s, got %s", expected, result),
 				expected.epsilonEquals(result, 0.0001f));
@@ -108,7 +108,7 @@ public class RobotBodyTest {
 		};
 		RobotBody body = new RobotBody(physics, attachmentLocs, perimeterLocs);
 
-		Vector3f expected = new Vector3f(-2f, 1f, 0f), result = body.jointLocs[3];
+		Vector3f expected = new Vector3f(-2f, 1f, 0f), result = body.getJointLocs()[3];
 
 		assertTrue(String.format("Expected %s, got %s", expected, result),
 				expected.epsilonEquals(result, 0.0001f));
@@ -125,7 +125,7 @@ public class RobotBodyTest {
 		};
 		RobotBody body = new RobotBody(physics, attachmentLocs, perimeterLocs);
 
-		Vector3f expected = new Vector3f(0f, 1f, 1f), result = body.jointLocs[4];
+		Vector3f expected = new Vector3f(0f, 1f, 1f), result = body.getJointLocs()[4];
 
 		assertTrue(String.format("Expected %s, got %s", expected, result),
 				expected.epsilonEquals(result, 0.0001f));
@@ -142,7 +142,7 @@ public class RobotBodyTest {
 		};
 		RobotBody body = new RobotBody(physics, attachmentLocs, perimeterLocs);
 
-		Vector3f expected = new Vector3f(0f, 1f, 2f), result = body.jointLocs[5];
+		Vector3f expected = new Vector3f(0f, 1f, 2f), result = body.getJointLocs()[5];
 
 		assertTrue(String.format("Expected %s, got %s", expected, result),
 				expected.epsilonEquals(result, 0.0001f));
@@ -159,7 +159,7 @@ public class RobotBodyTest {
 		};
 		RobotBody body = new RobotBody(physics, attachmentLocs, perimeterLocs);
 
-		Vector3f expected = new Vector3f(1f, 1f, 0f), result = body.jointLocs[6];
+		Vector3f expected = new Vector3f(1f, 1f, 0f), result = body.getJointLocs()[6];
 
 		assertTrue(String.format("Expected %s, got %s", expected, result),
 				expected.epsilonEquals(result, 0.0001f));
@@ -176,7 +176,7 @@ public class RobotBodyTest {
 		};
 		RobotBody body = new RobotBody(physics, attachmentLocs, perimeterLocs);
 
-		Vector3f expected = new Vector3f(2f, 1f, 0f), result = body.jointLocs[7];
+		Vector3f expected = new Vector3f(2f, 1f, 0f), result = body.getJointLocs()[7];
 
 		assertTrue(String.format("Expected %s, got %s", expected, result),
 				expected.epsilonEquals(result, 0.0001f));
@@ -193,7 +193,7 @@ public class RobotBodyTest {
 		};
 		RobotBody body = new RobotBody(physics, attachmentLocs, perimeterLocs);
 		
-		Vector3f expected = new Vector3f(0f, 1f, -1.5f), result = body.bodyLocs[0];
+		Vector3f expected = new Vector3f(0f, 1f, -1.5f), result = body.getBodyLocs()[0];
 
 		assertTrue(String.format("Expected %s, got %s", expected, result),
 				expected.epsilonEquals(result, 0.0001f));
@@ -211,7 +211,7 @@ public class RobotBodyTest {
 		};
 		RobotBody body = new RobotBody(physics, attachmentLocs, perimeterLocs);
 		
-		Vector3f expected = new Vector3f(0f, 1f, -2.5f), result = body.bodyLocs[1];
+		Vector3f expected = new Vector3f(0f, 1f, -2.5f), result = body.getBodyLocs()[1];
 
 		assertTrue(String.format("Expected %s, got %s", expected, result),
 				expected.epsilonEquals(result, 0.0001f));
@@ -229,7 +229,7 @@ public class RobotBodyTest {
 		};
 		RobotBody body = new RobotBody(physics, attachmentLocs, perimeterLocs);
 		
-		Vector3f expected = new Vector3f(-1.5f, 1f, 0f), result = body.bodyLocs[2];
+		Vector3f expected = new Vector3f(-1.5f, 1f, 0f), result = body.getBodyLocs()[2];
 
 		assertTrue(String.format("Expected %s, got %s", expected, result),
 				expected.epsilonEquals(result, 0.0001f));
@@ -246,7 +246,7 @@ public class RobotBodyTest {
 		};
 		RobotBody body = new RobotBody(physics, attachmentLocs, perimeterLocs);
 		
-		Vector3f expected = new Vector3f(-2.5f, 1f, 0f), result = body.bodyLocs[3];
+		Vector3f expected = new Vector3f(-2.5f, 1f, 0f), result = body.getBodyLocs()[3];
 
 		assertTrue(String.format("Expected %s, got %s", expected, result),
 				expected.epsilonEquals(result, 0.0001f));
@@ -264,7 +264,7 @@ public class RobotBodyTest {
 		};
 		RobotBody body = new RobotBody(physics, attachmentLocs, perimeterLocs);
 		
-		Vector3f expected = new Vector3f(0f, 1f, 1.5f), result = body.bodyLocs[4];
+		Vector3f expected = new Vector3f(0f, 1f, 1.5f), result = body.getBodyLocs()[4];
 
 		assertTrue(String.format("Expected %s, got %s", expected, result),
 				expected.epsilonEquals(result, 0.0001f));
@@ -282,7 +282,7 @@ public class RobotBodyTest {
 		};
 		RobotBody body = new RobotBody(physics, attachmentLocs, perimeterLocs);
 		
-		Vector3f expected = new Vector3f(0f, 1f, 2.5f), result = body.bodyLocs[5];
+		Vector3f expected = new Vector3f(0f, 1f, 2.5f), result = body.getBodyLocs()[5];
 
 		assertTrue(String.format("Expected %s, got %s", expected, result),
 				expected.epsilonEquals(result, 0.0001f));
@@ -301,7 +301,7 @@ public class RobotBodyTest {
 		};
 		RobotBody body = new RobotBody(physics, attachmentLocs, perimeterLocs);
 		
-		Vector3f expected = new Vector3f(1.5f, 1f, 0f), result = body.bodyLocs[6];
+		Vector3f expected = new Vector3f(1.5f, 1f, 0f), result = body.getBodyLocs()[6];
 
 		assertTrue(String.format("Expected %s, got %s", expected, result),
 				expected.epsilonEquals(result, 0.0001f));
@@ -319,7 +319,7 @@ public class RobotBodyTest {
 		};
 		RobotBody body = new RobotBody(physics, attachmentLocs, perimeterLocs);
 		
-		Vector3f expected = new Vector3f(2.5f, 1f, 0f), result = body.bodyLocs[7];
+		Vector3f expected = new Vector3f(2.5f, 1f, 0f), result = body.getBodyLocs()[7];
 
 		assertTrue(String.format("Expected %s, got %s", expected, result),
 				expected.epsilonEquals(result, 0.0001f));

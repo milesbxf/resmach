@@ -39,7 +39,8 @@ public class PhysicsDemo implements Updatable {
 	}
 
 	public void createRobot() {
-		RobotBody body = new RobotBody(physics,Lists.newArrayList(0,1,0,2,0,3,0,4),Lists.newArrayList(0.25f,0.5f,0.5f,0.5f,0.75f,0.5f,1f,0.5f));
+//		RobotBody body = new RobotBody(physics,Lists.newArrayList(0,1,0,3,0,5,0,7),Lists.newArrayList(0.25f,0.5f,0.5f,0.5f,0.75f,0.5f,1f,0.5f));
+		RobotBody body = new RobotBody(physics,Lists.newArrayList(0,1,0,3),Lists.newArrayList(0.375f,0.5f,0.625f,0.5f));
 	}
 	
 //	public void createBody() {
