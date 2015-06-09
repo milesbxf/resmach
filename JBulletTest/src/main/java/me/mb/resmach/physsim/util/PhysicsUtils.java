@@ -41,7 +41,7 @@ public class PhysicsUtils {
 
 		// We can also use DemoApplication::localCreateRigidBody, but for
 		// clarity it is provided here:
-		float mass = 0f;
+		float mass = 1f;
 
 		// rigidbody is dynamic if and only if mass is non zero, otherwise
 		// static

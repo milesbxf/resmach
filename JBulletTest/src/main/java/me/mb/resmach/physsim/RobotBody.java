@@ -23,9 +23,6 @@ public class RobotBody {
 	private final List<BodyPart> bodyParts;
 	private final List<BodyJoint> joints;
 	private final Physics physics;
-	private Vector3f[] bodyLocs;
-	private Vector3f[] jointLocsA,jointLocsB;
-	private float[] orientations;
 
 	public RobotBody(Physics physics, List<Integer> attachmentLocs,
 			List<Float> perimeterLocs) {
@@ -35,18 +32,13 @@ public class RobotBody {
 
 		createMainBody(2, 0.5f, 2);
 
-
 		for (int i = 0; i < attachmentLocs.size(); i++) {
 			createSegment(0.2f, 1f);
 		}
 
-		calculateSegmentAndJointPositions(attachmentLocs, perimeterLocs);
-//		for (int i = 0; i < attachmentLocs.size(); i++) {
-//			createJoint(attachmentLocs.get(i), i + 1);
-//			
-//		}
+		createJoints(attachmentLocs, perimeterLocs);
 	}
-	
+
 	private void createSegment(float radius, float length) {
 		CylinderBodyPart segment = new CylinderBodyPart(new Vector3f(), 0,
 				radius, length);
@@ -71,31 +63,6 @@ public class RobotBody {
 		physics.getDynamicsWorld().addRigidBody(mainBody.body);
 	}
 
-	private void createSegment(Vector3f position, float rotation, float radius,
-			float length) {
-		CylinderBodyPart segment = new CylinderBodyPart(new Vector3f(), rotation,
-				radius, length);
-		bodyParts.add(segment);
-		physics.getDynamicsWorld().addRigidBody(segment.body);
-	}
-
-	private void createJoint(int bodyAindex, int bodyBindex) {
-		BodyPart bodyA = bodyParts.get(bodyAindex), bodyB = bodyParts
-				.get(bodyBindex);
-		float rotationA, rotationB;
-//		Vector3f locA = bodyA.transformWorldToLocal(jointLocs[bodyBindex - 1]),
-//		locB = bodyB.transformWorldToLocal(jointLocs[bodyBindex - 1]);
-		
-		Vector3f locA=jointLocsA[bodyBindex - 1],locB=jointLocsB[bodyBindex - 1];
-		rotationB = orientations[bodyBindex - 1];
-		
-		BodyJoint joint = new BodyJoint(bodyA, bodyB, rotationB, rotationB,
-				locA,locB);
-		physics.getDynamicsWorld().addConstraint(joint.getConstraint());
-	}
-
-	
-	
 	/**
 	 * Calculates attachment points and positions of the segments.
 	 * 
@@ -109,47 +76,66 @@ public class RobotBody {
 	 *            connecting body, in the range [0,1]. This maps onto an angle
 	 *            which also determines orientation of the segment.
 	 */
-	private void calculateSegmentAndJointPositions(
-			List<Integer> attachmentIndices, List<Float> perimeterLocs) {
+	private void createJoints(List<Integer> attachmentIndices,
+			List<Float> perimeterLocs) {
 
-		int n = attachmentIndices.size();
-		bodyLocs = new Vector3f[n];
-		jointLocsA = new Vector3f[n];
-		jointLocsB = new Vector3f[n];
-		orientations = new float[n];
+		int n = attachmentIndices.size(); // number of segments to join
 
 		for (int bodyBindex = 0; bodyBindex < n; bodyBindex++) {
-			float xWidth,yWidth,rotation;
-			
+
+			float xWidth, // width of rectangle for perimeter calculation
+			yWidth, // height
+			rotation; // orientation of the joint to calculate constraining axis
+
 			int bodyAindex = attachmentIndices.get(bodyBindex);
-			float bodyBrotation = perimeterLocs.get(bodyBindex) * 2 * PhysicsUtils.PIf;
+			float bodyBrotation = perimeterLocs.get(bodyBindex) * 2
+					* PhysicsUtils.PIf;
 
+			// get body parts to join
 			BodyPart bodyA = bodyParts.get(bodyAindex);
-			BodyPart bodyB = bodyParts.get(bodyBindex+1);
-			Vector3f pivotA,pivotB;
-			if(bodyAindex == 0) {
-				xWidth=3f;yWidth=3f;rotation = bodyBrotation;
-				Vector2f pivotPt = GeomUtils.getPointOnRectPerimeter(xWidth, yWidth,
-						bodyBrotation);
-				pivotA = new Vector3f(pivotPt.x,0,pivotPt.y);
-			} else {
-				xWidth = 1.2f;yWidth=0.4f;
-				Vector2f pivotPt = GeomUtils.getPointOnRectPerimeter(xWidth, yWidth,
-						bodyBrotation);
-				rotation = GeomUtils.PIf + perimeterLocs.get(bodyAindex-1)* 2 * PhysicsUtils.PIf - bodyBrotation ;
-				pivotA = new Vector3f(0,pivotPt.x,pivotPt.y);
-			}
-			
-			
-			
-			pivotB = new Vector3f(0,0.5f,0);
-						
-			BodyJoint joint = new BodyJoint(bodyA,bodyB,rotation,rotation,pivotA,pivotB);
-			
-			joints.add(joint);
 
+			// body parts has an extra element at beginning (the main body) so
+			// index
+			// should be incremented by one
+			BodyPart bodyB = bodyParts.get(bodyBindex + 1);
+
+			Vector3f pivotA, pivotB; // pivot points of joint (in local
+										// coordinates)
+
+			if (bodyAindex == 0) { // attaching segment to main body
+
+				xWidth = 3f;
+				yWidth = 3f;
+				rotation = bodyBrotation;
+
+				Vector2f pivotPt = GeomUtils.getPointOnRectPerimeter(xWidth,
+						yWidth, bodyBrotation);
+
+				pivotA = new Vector3f(pivotPt.x, 0, pivotPt.y); // pivot is in
+																// XZ axis
+
+			} else { // attaching segment to another segment
+				xWidth = 1.2f;
+				yWidth = 0.4f;
+				rotation = GeomUtils.PIf + perimeterLocs.get(bodyAindex - 1)
+						* 2 * PhysicsUtils.PIf - bodyBrotation;
+
+				Vector2f pivotPt = GeomUtils.getPointOnRectPerimeter(xWidth,
+						yWidth, bodyBrotation);
+
+				pivotA = new Vector3f(0, pivotPt.x, pivotPt.y); // pivot in YZ
+																// axis
+			}
+
+			pivotB = new Vector3f(0, 0.5f, 0); // second pivot is always in Y
+												// axis
+
+			// create the joint and add it to the world
+			BodyJoint joint = new BodyJoint(bodyA, bodyB, rotation, rotation,
+					pivotA, pivotB);
+			joints.add(joint);
 			physics.getDynamicsWorld().addConstraint(joint.getConstraint());
-			
+
 		}
 	}
 
@@ -157,12 +143,7 @@ public class RobotBody {
 		return bodyParts;
 	}
 
-	Vector3f[] getBodyLocs() {
-		return bodyLocs;
+	public List<BodyJoint> getJoints() {
+		return joints;
 	}
-
-	Vector3f[] getJointLocs() {
-		return jointLocsA;
-	}
-
 }
