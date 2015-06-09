@@ -12,7 +12,7 @@ public class CylinderBodyPart extends BodyPart {
 	private final float radius,length;
 	
 	public CylinderBodyPart(Vector3f position, float orientation, float radius, float length) {
-		super(position, PhysicsUtils.createCylinder(PhysicsUtils.Axis.X, position.x, position.y, position.z, orientation,radius, length));
+		super(position, PhysicsUtils.createCylinder(PhysicsUtils.Axis.Y, position.x, position.y, position.z, orientation,radius, length));
 		this.radius=radius;this.length=length;
 	}	
 	

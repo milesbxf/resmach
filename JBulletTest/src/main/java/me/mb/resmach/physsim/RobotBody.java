@@ -35,15 +35,23 @@ public class RobotBody {
 
 		createMainBody(2, 0.5f, 2);
 
+
+		for (int i = 0; i < attachmentLocs.size(); i++) {
+			createSegment(0.2f, 1f);
+		}
+
 		calculateSegmentAndJointPositions(attachmentLocs, perimeterLocs);
-
-		for (int i = 0; i < attachmentLocs.size(); i++) {
-			createSegment(bodyLocs[i], orientations[i], 0.2f, 1f);
-		}
-
-		for (int i = 0; i < attachmentLocs.size(); i++) {
-			createJoint(attachmentLocs.get(i), i + 1);
-		}
+//		for (int i = 0; i < attachmentLocs.size(); i++) {
+//			createJoint(attachmentLocs.get(i), i + 1);
+//			
+//		}
+	}
+	
+	private void createSegment(float radius, float length) {
+		CylinderBodyPart segment = new CylinderBodyPart(new Vector3f(), 0,
+				radius, length);
+		bodyParts.add(segment);
+		physics.getDynamicsWorld().addRigidBody(segment.body);
 	}
 
 	/**
@@ -86,6 +94,8 @@ public class RobotBody {
 		physics.getDynamicsWorld().addConstraint(joint.getConstraint());
 	}
 
+	
+	
 	/**
 	 * Calculates attachment points and positions of the segments.
 	 * 
@@ -108,44 +118,38 @@ public class RobotBody {
 		jointLocsB = new Vector3f[n];
 		orientations = new float[n];
 
-		for (int i = 0; i < n; i++) {
+		for (int bodyBindex = 0; bodyBindex < n; bodyBindex++) {
+			float xWidth,yWidth,rotation;
+			
+			int bodyAindex = attachmentIndices.get(bodyBindex);
+			float bodyBrotation = perimeterLocs.get(bodyBindex) * 2 * PhysicsUtils.PIf;
 
-			int index = attachmentIndices.get(i);
-			float angBodyB = perimeterLocs.get(i) * 2 * PhysicsUtils.PIf;
-			float halfDist = 0.6f;
-
-			if (index == 0) { // if this segment attaches to the main body
-				Vector2f pt2D = GeomUtils.getPointOnRectPerimeter(2, 2,
-						angBodyB);
-				orientations[i] = angBodyB;
-				
-				jointLocsA[i] = new Vector3f(pt2D.x, 0, pt2D.y);
-				jointLocsB[i] = new Vector3f(-halfDist, 0, 0);
-				getBodyLocs()[i] = new Vector3f(getJointLocs()[i]);
-				getBodyLocs()[i].add(new Vector3f(halfDist
-						* (float) Math.cos(angBodyB), 0f, -halfDist
-						* (float) Math.sin(angBodyB)));
+			BodyPart bodyA = bodyParts.get(bodyAindex);
+			BodyPart bodyB = bodyParts.get(bodyBindex+1);
+			Vector3f pivotA,pivotB;
+			if(bodyAindex == 0) {
+				xWidth=3f;yWidth=3f;rotation = bodyBrotation;
+				Vector2f pivotPt = GeomUtils.getPointOnRectPerimeter(xWidth, yWidth,
+						bodyBrotation);
+				pivotA = new Vector3f(pivotPt.x,0,pivotPt.y);
 			} else {
-				float angBodyA = perimeterLocs.get(index - 1) * 2
-						* PhysicsUtils.PIf;
-				Vector2f pt2D = GeomUtils.getPointOnRectPerimeter(1f, 0.2f,
-						angBodyB);
-
-				orientations[i] = GeomUtils.PIf + (angBodyA - angBodyB);
-
-				float cosx = (float) Math.cos(angBodyA - angBodyB), sinx = (float) Math
-						.sin(angBodyA - angBodyB);
-				jointLocsA[i] = new Vector3f(pt2D.x,0,pt2D.y);
-				jointLocsB[i] = new Vector3f(-halfDist,0,0);
-//				getJointLocs()[i] = new Vector3f(pt2D.x * cosx + pt2D.y * sinx,
-//						0, -pt2D.x * sinx + pt2D.y * cosx);
-				// now translate relative to body
-//				getJointLocs()[i].add(getBodyLocs()[index - 1]);
-				getBodyLocs()[i] = new Vector3f(jointLocsB[i]);
-				getBodyLocs()[i].add(new Vector3f(halfDist
-						* (float) Math.cos(angBodyA), 0f, -halfDist
-						* (float) Math.sin(angBodyA)));
+				xWidth = 1.2f;yWidth=0.4f;
+				Vector2f pivotPt = GeomUtils.getPointOnRectPerimeter(xWidth, yWidth,
+						bodyBrotation);
+				rotation = GeomUtils.PIf + perimeterLocs.get(bodyAindex-1)* 2 * PhysicsUtils.PIf - bodyBrotation ;
+				pivotA = new Vector3f(0,pivotPt.x,pivotPt.y);
 			}
+			
+			
+			
+			pivotB = new Vector3f(0,0.5f,0);
+						
+			BodyJoint joint = new BodyJoint(bodyA,bodyB,rotation,rotation,pivotA,pivotB);
+			
+			joints.add(joint);
+
+			physics.getDynamicsWorld().addConstraint(joint.getConstraint());
+			
 		}
 	}
 
